@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLUM · Kine Recovery · CDMX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:    #07060A;
+      --deep:   #0D0C10;
+      --cream:  #EAE3D2;
+      --bone:   #F2EBD9;
+      --copper: #B5813A;
+      --stone:  #7A7268;
+      --muted:  #4A4440;
+      --line:   rgba(181,129,58,0.18);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: screen;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(181,129,58,0.05) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 99;
+      background: rgba(7,6,10,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 0.38em;
+      color: var(--bone);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: 8px;
+      font-weight: 300;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--stone);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--copper); }
+
+    .nav-cta {
+      padding: 9px 22px;
+      border: 1px solid rgba(181,129,58,0.5);
+      color: var(--copper) !important;
+      transition: all 0.4s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--copper) !important;
+      color: var(--ink) !important;
+    }
+
+    /* WRAP */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 100px 0 80px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-symbol {
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: rise 1.2s 0.1s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .hero-label {
+      font-size: 8px;
+      font-weight: 300;
+      letter-spacing: 0.62em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: rise 1.2s 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 10vw, 96px);
+      font-weight: 200;
+      letter-spacing: 0.06em;
+      color: var(--bone);
+      line-height: 1;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: rise 1.2s 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--copper);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--stone);
+      line-height: 2.2;
+      max-width: 480px;
+      margin-bottom: 52px;
+      opacity: 0;
+      animation: rise 1.2s 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: rise 1.2s 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .btn-primary {
+      padding: 16px 40px;
+      border: 1px solid rgba(181,129,58,0.6);
+      background: transparent;
+      color: var(--copper);
+      font-family: 'Outfit', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.45s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--copper);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .btn-primary:hover::before { transform: scaleX(1); }
+
+    .btn-primary span {
+      position: relative;
+      z-index: 1;
+      transition: color 0.4s;
+    }
+
+    .btn-primary:hover span { color: var(--ink); }
+
+    .btn-secondary {
+      padding: 16px 40px;
+      border: 1px solid rgba(122,114,104,0.25);
+      background: transparent;
+      color: var(--stone);
+      font-family: 'Outfit', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.4s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--stone);
+      color: var(--cream);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 96px 0;
+      border-bottom: 1px solid rgba(181,129,58,0.07);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .sec-label {
+      font-size: 7.5px;
+      font-weight: 300;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 16px;
+    }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 6vw, 48px);
+      font-weight: 300;
+      color: var(--bone);
+      line-height: 1.15;
+      letter-spacing: 0.03em;
+      margin-bottom: 48px;
+    }
+
+    .sec-title em { font-style: italic; color: var(--copper); }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .service-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(181,129,58,0.1);
+      padding: 32px 28px;
+      transition: border-color 0.4s, background 0.4s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(181,129,58,0.3);
+      background: rgba(181,129,58,0.04);
+    }
+
+    .service-tag {
+      font-size: 7px;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 12px;
+    }
+
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .service-price {
+      font-size: 28px;
+      font-weight: 200;
+      color: var(--bone);
+      letter-spacing: 0.02em;
+    }
+
+    .service-price sub {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--stone);
+      text-transform: uppercase;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .service-regular {
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: line-through;
+      margin-top: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    .launch-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 10px;
+      border: 1px solid rgba(181,129,58,0.3);
+      font-size: 7px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    /* ZONES */
+    .zone-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .zone-table tr {
+      border-bottom: 1px solid rgba(181,129,58,0.07);
+    }
+
+    .zone-table tr:last-child { border-bottom: none; }
+
+    .zone-table td {
+      padding: 20px 0;
+      vertical-align: middle;
+    }
+
+    .zone-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+    }
+
+    .zone-time {
+      font-size: 11px;
+      color: var(--stone);
+      letter-spacing: 0.2em;
+      text-align: right;
+    }
+
+    .zone-slots {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    /* CREED */
+    .creed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .creed-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(181,129,58,0.07);
+    }
+
+    .creed-item:first-child { border-top: 1px solid rgba(181,129,58,0.07); }
+
+    .creed-n {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      color: var(--copper);
+      opacity: 0.5;
+      min-width: 24px;
+      padding-top: 4px;
+    }
+
+    .creed-text {
+      font-size: 14px;
+      color: var(--cream);
+      line-height: 1.8;
+    }
+
+    .creed-text em {
+      display: block;
+      font-style: italic;
+      color: var(--stone);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* NINTAI */
+    .nintai-block {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .nintai-word {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 12vw, 88px);
+      font-weight: 200;
+      letter-spacing: 0.38em;
+      color: var(--copper);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .nintai-def {
+      font-size: 8px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 28px;
+    }
+
+    .nintai-phrase {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--bone);
+      line-height: 2;
+    }
+
+    /* CTA FINAL */
+    .cta-final {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .cta-final-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--bone);
+      margin-bottom: 12px;
+    }
+
+    .cta-final-sub {
+      font-size: 13px;
+      color: var(--stone);
+      margin-bottom: 40px;
+      line-height: 2;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--line);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 0.4em;
+      color: rgba(122,114,104,0.35);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(122,114,104,0.3);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--copper); }
+
+    /* RULE */
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(181,129,58,0.25), transparent 70%);
+      margin: 48px 0;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 24px; }
+      .wrap { padding: 0 24px; }
+      .nav-links { display: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">SOLUM</div>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#zonas">Zonas</a>
+    <a href="#filosofia">Filosofía</a>
+    <a href="agenda.html" class="nav-cta"><span>Agenda tu sesión</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <div class="hero">
+
+    <div class="hero-symbol">
+      <svg width="64" height="36" viewBox="0 0 80 44" fill="none">
+        <line x1="0" y1="6"  x2="80" y2="6"  stroke="#B5813A" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="0" y1="22" x2="80" y2="22" stroke="#F2EBD9" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="0" y1="38" x2="56" y2="38" stroke="#B5813A" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="hero-label">Kine Recovery · CDMX · Polanco · Santa Fe</div>
+
+    <div class="hero-title">
+      Recuperación<br>
+      a <em>domicilio.</em>
+    </div>
+
+    <p class="hero-sub">Sin traslados. Sin sala de espera. Sin explicarte ante nadie. Yo llego a tu espacio con aceites esenciales, intención y privacidad completa. Tu única tarea es estar ahí.</p>
+
+    <div class="hero-actions">
+      <a href="agenda.html" class="btn-primary"><span>Agenda tu sesión</span></a>
+      <a href="#servicios" class="btn-secondary">Ver servicios</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="wrap">
+    <div class="sec-label">Servicios · Precios de lanzamiento</div>
+    <div class="sec-title">Lo que incluye<br>cada <em>sesión.</em></div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-tag">Sesión individual</div>
+        <div class="service-name">Masaje deportivo<br>y recuperación</div>
+        <div class="service-price">$499 <sub>MXN</sub></div>
+        <div class="service-regular">Regular $650</div>
+        <div class="launch-badge">60 minutos</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Sesión individual</div>
+        <div class="service-name">Masaje de relajación<br>profunda</div>
+        <div class="service-price">$749 <sub>MXN</sub></div>
+        <div class="service-regular">Regular $950</div>
+        <div class="launch-badge">90 minutos</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Pack fidelidad</div>
+        <div class="service-name">4 sesiones de<br>recuperación</div>
+        <div class="service-price">$1,699 <sub>MXN</sub></div>
+        <div class="service-regular">Regular $2,200</div>
+        <div class="launch-badge">4 × 60 min</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Pack fidelidad</div>
+        <div class="service-name">4 sesiones de<br>relajación profunda</div>
+        <div class="service-price">$2,499 <sub>MXN</sub></div>
+        <div class="service-regular">Regular $3,200</div>
+        <div class="launch-badge">4 × 90 min</div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <p style="font-size:13px; color:var(--stone); line-height:2;">
+      Cada sesión incluye: aceites esenciales naturales · ambiente personalizado · Pre-Session Profile · seguimiento 24h posterior. Anticipo del 25% requerido para confirmar lugar.
+    </p>
+
+  </div>
+</section>
+
+<!-- ZONAS -->
+<section id="zonas">
+  <div class="wrap">
+    <div class="sec-label">Zonas y disponibilidad</div>
+    <div class="sec-title">Dónde y cuándo<br>opera <em>SOLUM.</em></div>
+
+    <table class="zone-table">
+      <tr>
+        <td><div class="zone-name">Santa Fe · Corporativos</div></td>
+        <td><div class="zone-time">Lunes a Viernes</div><div class="zone-slots">18:00 · 19:00 hrs</div></td>
+      </tr>
+      <tr>
+        <td><div class="zone-name">Polanco · Lomas · Chapultepec</div></td>
+        <td><div class="zone-time">Lunes a Viernes</div><div class="zone-slots">19:00 · 20:00 hrs</div></td>
+      </tr>
+      <tr>
+        <td><div class="zone-name">Sábados y Domingos</div></td>
+        <td><div class="zone-time">Horario flexible</div><div class="zone-slots">09:00 – 20:00 hrs</div></td>
+      </tr>
+    </table>
+
+    <div class="rule"></div>
+
+    <p style="font-size:13px; color:var(--stone); line-height:2;">Máximo 2 sesiones por día según disponibilidad y zona. Para zonas fuera de las listadas consulta disponibilidad directamente por WhatsApp.</p>
+
+  </div>
+</section>
+
+<!-- FILOSOFÍA -->
+<section id="filosofia">
+  <div class="wrap">
+
+    <div class="nintai-block">
+      <div class="nintai-word">NINTAI</div>
+      <div class="nintai-def">忍耐 · Japonés · Perseverancia con paciencia</div>
+      <div class="nintai-phrase">
+        La calma en la tormenta.<br>
+        El coraje de seguir cuando todo duele.
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="sec-label">En lo que cree SOLUM</div>
+    <div class="creed-list">
+      <div class="creed-item">
+        <div class="creed-n">01</div>
+        <div class="creed-text">El cuerpo merece atención antes de que falle.
+          <em>No esperamos la lesión para actuar.</em>
+        </div>
+      </div>
+      <div class="creed-item">
+        <div class="creed-n">02</div>
+        <div class="creed-text">La privacidad no es un extra. Es el servicio.
+          <em>Tu sesión es tuya. Sin audiencia, sin performance.</em>
+        </div>
+      </div>
+      <div class="creed-item">
+        <div class="creed-n">03</div>
+        <div class="creed-text">El detalle es respeto.
+          <em>Cada sesión se prepara con intención. El aroma, la luz, el silencio.</em>
+        </div>
+      </div>
+      <div class="creed-item">
+        <div class="creed-n">04</div>
+        <div class="creed-text">La conveniencia es parte del cuidado.
+          <em>Si tienes que esforzarte para descansar, algo falla.</em>
+        </div>
+      </div>
+      <div class="creed-item">
+        <div class="creed-n">05</div>
+        <div class="creed-text">Menos aparatos. Más presencia.
+          <em>Las manos, el aceite y la escucha son suficientes.</em>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="wrap">
+  <div class="cta-final">
+    <div class="cta-final-title">Tu sesión está lista.</div>
+    <p class="cta-final-sub">Un mensaje es suficiente para apartar tu lugar.</p>
+    <div class="cta-row">
+      <a href="agenda.html" class="btn-primary"><span>Registrar mi sesión</span></a>
+      <a href="https://wa.me/5215529632014" class="btn-secondary" target="_blank">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">SOLUM · Kine Recovery · CDMX</div>
+  <div class="footer-links">
+    <a href="agenda.html">Agenda</a>
+    <a href="https://instagram.com/solum.kn" target="_blank">Instagram</a>
+    <a href="https://wa.me/5215529632014" target="_blank">WhatsApp</a>
+  </div>
+</footer>
+
+</body>
+</html>
